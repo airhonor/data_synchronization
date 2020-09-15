@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.honorzhang.data.synchronization.mapper.mysql.*;
 import com.honorzhang.data.synchronization.mapper.oracle.*;
 import com.honorzhang.data.synchronization.model.mysql.Antenna;
+import com.honorzhang.data.synchronization.model.mysql.KnownTarget;
 import com.honorzhang.data.synchronization.model.mysql.Satellite;
 import com.honorzhang.data.synchronization.model.mysql.Station;
 import com.honorzhang.data.synchronization.model.oracle.*;

@@ -1,6 +1,7 @@
 package com.honorzhang.data.synchronization.mapper.mysql;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.honorzhang.data.synchronization.model.mysql.KnownTarget;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 

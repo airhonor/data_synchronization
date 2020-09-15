@@ -1,4 +1,4 @@
-package com.honorzhang.data.synchronization.mapper.mysql;
+package com.honorzhang.data.synchronization.model.mysql;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
