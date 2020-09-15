@@ -1,2 +1,2 @@
 # data_synchronization
-spring boot配置多数据源，进行数据同步
+spring boot配置多数据源，进行数据同步，源数据为oracle数据库，目标数据源为mysql数据库，且数据的字段名称不一样
