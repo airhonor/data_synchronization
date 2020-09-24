@@ -1,5 +1,6 @@
 package com.honorzhang.data.synchronization.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.honorzhang.data.synchronization.mapper.mysql.*;
 import com.honorzhang.data.synchronization.mapper.oracle.*;
@@ -28,8 +29,9 @@ public class DataSynchronization {
     private final BizTargetMapper bizTargetMapper;
     private final BizTargetPointMapper bizTargetPointMapper;
     private final KnownTargetMapper knownTargetMapper;
+    private final InfoBasisPayloadMapper infoBasisPayloadMapper;
 
-    public DataSynchronization(SatelliteMapper satelliteMapper, InfoBasisSatelliteMapper infoBasisSatelliteMapper, InfoBasisStationMapper infoBasisStationMapper, StationMapper stationMapper, InfoBasisAntennaMapper infoBasisAntennaMapper, AntennaMapper antennaMapper, BizTargetMapper bizTargetMapper, BizTargetPointMapper bizTargetPointMapper, KnownTargetMapper knownTargetMapper) {
+    public DataSynchronization(SatelliteMapper satelliteMapper, InfoBasisSatelliteMapper infoBasisSatelliteMapper, InfoBasisStationMapper infoBasisStationMapper, StationMapper stationMapper, InfoBasisAntennaMapper infoBasisAntennaMapper, AntennaMapper antennaMapper, BizTargetMapper bizTargetMapper, BizTargetPointMapper bizTargetPointMapper, KnownTargetMapper knownTargetMapper, InfoBasisPayloadMapper infoBasisPayloadMapper) {
         this.satelliteMapper = satelliteMapper;
         this.infoBasisSatelliteMapper = infoBasisSatelliteMapper;
         this.infoBasisStationMapper = infoBasisStationMapper;
@@ -39,6 +41,7 @@ public class DataSynchronization {
         this.bizTargetMapper = bizTargetMapper;
         this.bizTargetPointMapper = bizTargetPointMapper;
         this.knownTargetMapper = knownTargetMapper;
+        this.infoBasisPayloadMapper = infoBasisPayloadMapper;
     }
     //读取info卫星数据
 
@@ -46,11 +49,13 @@ public class DataSynchronization {
 
         List<InfoBasisSatellite> infoBasisSatellites = infoBasisSatelliteMapper.selectList(new QueryWrapper<>());
         for (InfoBasisSatellite i : infoBasisSatellites) {
+            List<InfoBasisPayload> payloads = infoBasisPayloadMapper.selectList(new QueryWrapper<InfoBasisPayload>().eq("satellite_id", i.getId()));
             Satellite satellite = new Satellite();
             satellite.setName(i.getSatelliteName());
             satellite.setCode(i.getId());
             satellite.setSatelliteType(i.getSatelliteType());
             satellite.setRevisitPeriod(Double.parseDouble(i.getOrbitPeriod()));
+            satellite.setLoadInfo(JSONObject.toJSONString(payloads));
             satellite.setCreateTime(System.currentTimeMillis());
             satellite.setUpdateTime(System.currentTimeMillis());
             satelliteMapper.insert(satellite);
@@ -96,9 +101,9 @@ public class DataSynchronization {
             targetSync.setName(target.getTargetName());
             targetSync.setType(target.getTargetType());
             List<BizTargetPoint> bizTargetPoints = bizTargetPointMapper.selectList(new QueryWrapper<BizTargetPoint>().eq("target_id", target.getId()).orderByAsc("target_point_sequence"));
-            String location = bizTargetPoints.get(0).getLatitude() + " " + bizTargetPoints.get(0).getLongitude();
+            String location = bizTargetPoints.get(0).getLongitude() + " " + bizTargetPoints.get(0).getLatitude();
             for (int i = 1; i < bizTargetPoints.size(); i++) {
-                location = location + "," + bizTargetPoints.get(i).getLatitude() + " " + bizTargetPoints.get(i).getLongitude();
+                location = location + "," + bizTargetPoints.get(i).getLongitude() + " " + bizTargetPoints.get(i).getLatitude();
             }
             targetSync.setLocation(location);
             targetSync.setCreateTime(System.currentTimeMillis());
