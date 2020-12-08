@@ -11,6 +11,10 @@ import com.honorzhang.data.synchronization.model.mysql.Station;
 import com.honorzhang.data.synchronization.model.oracle.*;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,8 +34,9 @@ public class DataSynchronization {
     private final BizTargetPointMapper bizTargetPointMapper;
     private final KnownTargetMapper knownTargetMapper;
     private final InfoBasisPayloadMapper infoBasisPayloadMapper;
+    private final InfoBasisInstanceMapper infoBasisInstanceMapper;
 
-    public DataSynchronization(SatelliteMapper satelliteMapper, InfoBasisSatelliteMapper infoBasisSatelliteMapper, InfoBasisStationMapper infoBasisStationMapper, StationMapper stationMapper, InfoBasisAntennaMapper infoBasisAntennaMapper, AntennaMapper antennaMapper, BizTargetMapper bizTargetMapper, BizTargetPointMapper bizTargetPointMapper, KnownTargetMapper knownTargetMapper, InfoBasisPayloadMapper infoBasisPayloadMapper) {
+    public DataSynchronization(SatelliteMapper satelliteMapper, InfoBasisSatelliteMapper infoBasisSatelliteMapper, InfoBasisStationMapper infoBasisStationMapper, StationMapper stationMapper, InfoBasisAntennaMapper infoBasisAntennaMapper, AntennaMapper antennaMapper, BizTargetMapper bizTargetMapper, BizTargetPointMapper bizTargetPointMapper, KnownTargetMapper knownTargetMapper, InfoBasisPayloadMapper infoBasisPayloadMapper, InfoBasisInstanceMapper infoBasisInstanceMapper) {
         this.satelliteMapper = satelliteMapper;
         this.infoBasisSatelliteMapper = infoBasisSatelliteMapper;
         this.infoBasisStationMapper = infoBasisStationMapper;
@@ -42,6 +47,7 @@ public class DataSynchronization {
         this.bizTargetPointMapper = bizTargetPointMapper;
         this.knownTargetMapper = knownTargetMapper;
         this.infoBasisPayloadMapper = infoBasisPayloadMapper;
+        this.infoBasisInstanceMapper = infoBasisInstanceMapper;
     }
     //读取info卫星数据
 
@@ -111,6 +117,22 @@ public class DataSynchronization {
             knownTargetMapper.insert(targetSync);
 
         }
+    }
+
+    public void updateInstanceEpochTime() {
+        List<Satellite> satellites = satelliteMapper.selectList(new QueryWrapper<>());
+        satellites.forEach(satellite -> {
+            List<InfoBasisInstance> infoBasisInstances = infoBasisInstanceMapper.selectList(new QueryWrapper<InfoBasisInstance>().eq("satellite_id", satellite.getCode()).orderByDesc("epoch_time"));
+            //更新瞬根的元立时间到程序启动时间的早上八点
+            InfoBasisInstance infoBasisInstance = infoBasisInstances.get(0);
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(2020, 11, 7, 8, 0, 0);
+            System.out.println(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(calendar.getTime()));
+            Date date = calendar.getTime();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            infoBasisInstance.setEpochTime(timestamp);
+            infoBasisInstanceMapper.updateById(infoBasisInstance);
+        });
     }
 
 }
