@@ -51,7 +51,7 @@ public class DataSynchronization {
     }
     //读取info卫星数据
 
-    public void SatelliteDataSync() {
+    public void satelliteDataSync() {
 
         List<InfoBasisSatellite> infoBasisSatellites = infoBasisSatelliteMapper.selectList(new QueryWrapper<>());
         for (InfoBasisSatellite i : infoBasisSatellites) {
@@ -68,7 +68,7 @@ public class DataSynchronization {
         }
     }
 
-    public void StationDataSync() {
+    public void stationDataSync() {
         List<InfoBasisStation> infoBasisStations = infoBasisStationMapper.selectList(new QueryWrapper<>());
         for (InfoBasisStation station : infoBasisStations) {
             Station stationSync = new Station();
@@ -84,7 +84,7 @@ public class DataSynchronization {
         }
     }
 
-    public void AntennaDataSync() {
+    public void antennaDataSync() {
         List<InfoBasisAntenna> infoBasisAntennas = infoBasisAntennaMapper.selectList(new QueryWrapper<>());
         for (InfoBasisAntenna antenna : infoBasisAntennas) {
             Antenna antennaSync = new Antenna();

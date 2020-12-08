@@ -19,17 +19,17 @@ public class DataSyncController {
 
     @PostMapping("/satellite")
     public void satelliteDataSync() {
-        dataSynchronization.SatelliteDataSync();
+        dataSynchronization.satelliteDataSync();
     }
 
     @PostMapping("/station")
     public void stationDataSync() {
-        dataSynchronization.StationDataSync();
+        dataSynchronization.stationDataSync();
     }
 
     @PostMapping("/antenna")
     public void antennaDataSync() {
-        dataSynchronization.AntennaDataSync();
+        dataSynchronization.antennaDataSync();
     }
 
     @PostMapping("/target")
